@@ -326,6 +326,10 @@ function formatNutritionLine(product) {
   return `${prettyNumber(product.kcalPer100, 0)} kcal per 100 ${product.unit}${macros.length ? ` · ${macros.join(' · ')}` : ''}`;
 }
 
+function nutritionLookupError() {
+  return 'Nutrition data could not be reached right now. Check your connection and try again, or enter the values from the food label.';
+}
+
 function renderComponent(component, index) {
   const data = component.product;
   const nutritionInfo = data ? `<div class="component-source"><a href="${escapeHtml(data.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(data.source)}${data.brand ? ` · ${escapeHtml(data.brand)}` : ''}</a><br>${escapeHtml(formatNutritionLine(data))}</div><button class="quiet-button" type="button" data-component-action="reset-product" data-component-index="${index}">Change nutrition match</button>` : '<div class="component-source">No nutrition data selected yet.</div>';
@@ -423,9 +427,9 @@ async function lookupComponent(index) {
     component.searchResults = await searchNutrition(query);
     component.searchState = component.searchResults.length ? 'done' : 'error';
     component.searchMessage = component.searchResults.length ? '' : 'No matching nutrition record found. Enter values from a label or try a more specific name.';
-  } catch (error) {
+  } catch {
     component.searchState = 'error';
-    component.searchMessage = error.message || 'The nutrition database could not be reached. Try again when you are online.';
+    component.searchMessage = nutritionLookupError();
   }
   renderDraftEditor();
 }
