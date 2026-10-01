@@ -1,123 +1,136 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#111111">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="CalorieSnap">
-<title>CalorieSnap</title>
-<style>
-:root{--ink:#111;--muted:#777;--soft:#f5f5f5;--line:#e9e9e9;--safe-bottom:env(safe-area-inset-bottom,0px);--safe-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:#f2f2f2;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
-body{overscroll-behavior:none}
-button,input{font:inherit}
-button{cursor:pointer}
-.app{width:100%;max-width:430px;min-height:100svh;margin:0 auto;background:#fff;padding:calc(24px + var(--safe-top)) 20px calc(176px + var(--safe-bottom))}
-.brand{text-align:center;font-size:28px;font-weight:850;letter-spacing:-.8px;margin:0 0 34px}
-.today-label{text-align:center;font-size:12px;letter-spacing:2.5px;font-weight:800;color:#888}
-.total{text-align:center;font-size:70px;line-height:.95;font-weight:850;letter-spacing:-3px;margin-top:9px}
-.unit{text-align:center;font-size:18px;color:#777;margin-top:10px}
-.rule{height:1px;background:var(--line);margin:31px 0 25px}
-.section-title{font-size:23px;font-weight:850;letter-spacing:-.5px;margin-bottom:14px}
-.empty{background:#f6f6f6;border-radius:20px;padding:26px 18px;text-align:center;color:#777;font-size:16px;line-height:1.4}
-.empty b{display:block;color:#111;font-size:18px;margin-bottom:5px}
-.meal{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#f6f6f6;border-radius:16px;padding:16px;margin:9px 0}
-.meal b{display:block;font-size:16px}.meal small{display:block;color:#888;margin-top:3px}.meal strong{white-space:nowrap;font-size:16px}
-.camera-button{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(92px + var(--safe-bottom));width:min(390px,calc(100vw - 36px));height:68px;border:0;border-radius:20px;background:#111;color:#fff;font-size:17px;font-weight:850;box-shadow:0 8px 24px #0003}
-.camera-button:active{transform:translateX(-50%) scale(.98)}
-.nav{position:fixed;z-index:19;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;height:calc(74px + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center}
-.nav button{border:0;background:none;color:#777;font-size:13px;font-weight:700;min-width:90px;height:58px}.nav button.active{color:#111}
-.overlay{display:none;position:fixed;inset:0;background:#fff;z-index:100;overflow:auto}.overlay.show{display:block}
-.camera-screen{background:#000;color:#fff;overflow:hidden}.camera-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.camera-ui{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(22px + var(--safe-top)) 20px calc(26px + var(--safe-bottom));pointer-events:none}.camera-ui>*{pointer-events:auto}.camera-close{align-self:flex-start;width:46px;height:46px;border:0;border-radius:50%;background:#000a;color:#fff;font-size:28px}.camera-tip{background:#000b;padding:10px 15px;border-radius:13px;font-weight:700}.shutter{width:84px;height:84px;border-radius:50%;border:7px solid #fff;background:#111;box-shadow:0 0 0 2px #111}
-.panel{max-width:430px;margin:auto;padding:calc(18px + var(--safe-top)) 20px calc(32px + var(--safe-bottom))}.back{border:0;background:none;padding:8px 0 18px;font-size:17px;font-weight:800;color:#111}.photo{width:100%;height:270px;object-fit:cover;border-radius:20px;background:#eee}.eyebrow{margin-top:20px;font-size:12px;letter-spacing:2px;font-weight:850;color:#888}.analysis-title{font-size:31px;line-height:1.05;letter-spacing:-1px;margin:8px 0 18px}.card{background:#f5f5f5;border-radius:18px;padding:18px}.card strong{font-size:17px}.muted{color:#777;font-size:13px;line-height:1.5;margin-top:7px}.field{width:100%;height:52px;border:1px solid #ddd;border-radius:14px;padding:0 15px;background:#fff;font-size:17px;outline:none;margin-top:8px}.field:focus{border-color:#111}.question{font-weight:850;margin:20px 0 4px}.option{display:block;width:100%;text-align:left;padding:15px;border:1px solid #ddd;border-radius:14px;background:#fff;margin:9px 0;font-weight:700}.option.selected{border:2px solid #111}.primary{display:block;width:100%;height:56px;border:0;border-radius:16px;background:#111;color:#fff;font-weight:850;font-size:16px;margin-top:16px}.secondary{display:block;width:100%;height:52px;border:1px solid #ddd;border-radius:15px;background:#fff;font-weight:800;margin-top:9px}.calorie-total{display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;border-radius:17px;padding:18px;margin-top:18px;font-weight:850}.calorie-total span:last-child{font-size:23px}.warning{background:#fff5da;border-radius:15px;padding:14px;font-size:13px;line-height:1.5;margin-top:14px}.loading{text-align:center;padding:34px 10px;color:#666;line-height:1.5}.spinner{width:32px;height:32px;border:3px solid #ddd;border-top-color:#111;border-radius:50%;margin:0 auto 15px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-.history-list{margin-top:15px}.day{background:#f6f6f6;border-radius:18px;padding:15px;margin:10px 0}.day-head{display:flex;justify-content:space-between;font-weight:850;margin-bottom:10px}.small-meal{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #e4e4e4;font-size:14px}.empty-history{text-align:center;color:#777;padding:40px 10px}
-.toast{position:fixed;left:50%;bottom:calc(184px + var(--safe-bottom));transform:translateX(-50%);z-index:200;background:#111;color:#fff;padding:13px 17px;border-radius:14px;font-weight:700;display:none;max-width:calc(100vw - 40px);text-align:center}.toast.show{display:block}
-@media(min-width:600px){body{padding:20px}.app{min-height:calc(100svh - 40px);border-radius:24px;box-shadow:0 12px 45px #0001}.nav,.camera-button{max-width:390px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f7f3">
+  <meta name="description" content="A calm, private food diary with photo-based food suggestions and transparent nutrition data.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CalorieSnap">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>CalorieSnap</title>
 </head>
 <body>
-<main class="app">
-  <div class="brand">CalorieSnap</div>
-  <div class="today-label">TODAY</div>
-  <div id="total" class="total">0</div>
-  <div class="unit">kcal</div>
-  <div class="rule"></div>
-  <div class="section-title">Today's food</div>
-  <div id="meals" class="empty"><b>Nothing logged yet</b>Take a photo of your food to get started.</div>
-</main>
+  <div class="app-frame">
+    <header class="topbar">
+      <a class="brand" href="#today" aria-label="CalorieSnap home">
+        <img src="./icons/icon.svg" width="34" height="34" alt="">
+        <span>CalorieSnap</span>
+      </a>
+      <button id="targetButton" class="goal-pill" type="button" aria-label="Set daily calorie target">Set daily goal <span aria-hidden="true">＋</span></button>
+    </header>
 
-<button class="camera-button" id="takeButton">📷 &nbsp; TAKE PHOTO</button>
-<nav class="nav">
-  <button id="todayTab" class="active">🏠<br>Today</button>
-  <button id="historyTab">📖<br>History</button>
-</nav>
+    <main id="todayView" class="view active" aria-labelledby="todayHeading">
+      <section class="daily-card" aria-label="Today's calories">
+        <div class="daily-topline"><span id="todayDate" class="eyebrow">TODAY</span><span id="targetLabel" class="daily-target"></span></div>
+        <h1 id="todayHeading" class="daily-total"><span id="dailyTotal">0</span><span class="daily-unit">kcal</span></h1>
+        <p id="dailySubline" class="daily-subline">A fresh page. Start with a photo.</p>
+        <div id="progressTrack" class="progress-track" role="progressbar" aria-label="Daily calorie target" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+          <span id="progressFill" class="progress-fill"></span>
+        </div>
+      </section>
 
-<section id="cameraOverlay" class="overlay camera-screen">
-  <video id="video" class="camera-video" autoplay playsinline muted></video>
-  <div class="camera-ui">
-    <button class="camera-close" id="closeCamera">×</button>
-    <div class="camera-tip">Fit the whole food or drink in frame</div>
-    <button class="shutter" id="shutter" aria-label="Take photo"></button>
+      <section class="diary-section" aria-labelledby="diaryHeading">
+        <div class="section-heading">
+          <div><p class="eyebrow">YOUR JOURNAL</p><h2 id="diaryHeading">Today</h2></div>
+          <button id="manualButton" class="text-button" type="button">Add manually</button>
+        </div>
+        <div id="diaryList" class="diary-list"></div>
+      </section>
+      <p class="privacy-note"><span class="privacy-dot" aria-hidden="true"></span> Your diary and food photos stay on this device.</p>
+    </main>
+
+    <main id="historyView" class="view" aria-labelledby="historyHeading" hidden>
+      <section class="section-heading history-heading"><div><p class="eyebrow">LOOKING BACK</p><h1 id="historyHeading">Your history</h1></div></section>
+      <div id="historyList" class="history-list"></div>
+    </main>
+
+    <div class="capture-dock" id="captureDock">
+      <button id="takePhotoButton" class="capture-button" type="button"><span class="camera-glyph" aria-hidden="true">◎</span><span>Take a photo</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+    </div>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button id="todayTab" class="nav-item active" type="button" aria-current="page"><span class="nav-icon" aria-hidden="true">◷</span><span>Today</span></button>
+      <button id="historyTab" class="nav-item" type="button"><span class="nav-icon" aria-hidden="true">▤</span><span>History</span></button>
+    </nav>
   </div>
-  <canvas id="canvas" hidden></canvas>
-</section>
 
-<section id="analysisOverlay" class="overlay">
-  <div class="panel">
-    <button class="back" id="retake">‹ Retake</button>
-    <img id="photo" class="photo" alt="Food photo">
-    <div id="analysisContent"></div>
-  </div>
-</section>
+  <input id="photoLibrary" class="visually-hidden" type="file" accept="image/*" aria-label="Choose a food photo">
 
-<section id="historyOverlay" class="overlay">
-  <div class="panel">
-    <button class="back" id="closeHistory">‹ Today</button>
-    <div class="eyebrow">DIARY</div>
-    <h1 class="analysis-title">Food history</h1>
-    <div id="historyList" class="history-list"></div>
-  </div>
-</section>
+  <section id="cameraScreen" class="full-screen camera-screen" aria-label="Take a food photo" hidden>
+    <video id="cameraVideo" autoplay playsinline muted aria-label="Live camera view"></video>
+    <div class="camera-shade"></div>
+    <div class="camera-head">
+      <button id="closeCamera" class="round-button light" type="button" aria-label="Close camera">×</button>
+      <span class="camera-brand">CalorieSnap</span><span class="camera-spacer"></span>
+    </div>
+    <div class="camera-guide" aria-hidden="true"><span></span></div>
+    <p class="camera-instruction">Fit your food inside the frame</p>
+    <div id="cameraMessage" class="camera-message" role="status" hidden></div>
+    <div class="camera-actions">
+      <button id="libraryButton" class="library-button" type="button"><span aria-hidden="true">▧</span><span>Choose photo</span></button>
+      <button id="shutterButton" class="shutter-button" type="button" aria-label="Take photo"><span></span></button>
+      <span class="camera-spacer"></span>
+    </div>
+    <canvas id="captureCanvas" class="visually-hidden"></canvas>
+  </section>
 
-<div id="toast" class="toast"></div>
+  <section id="analysisScreen" class="full-screen sheet-screen" aria-labelledby="analysisTitle" hidden>
+    <header class="sheet-header">
+      <button id="analysisBack" class="round-button" type="button" aria-label="Close analysis">‹</button>
+      <span class="sheet-header-title">Photo review</span><span class="camera-spacer"></span>
+    </header>
+    <div class="sheet-scroll">
+      <img id="reviewPhoto" class="review-photo" alt="Your food photo">
+      <div id="analysisState" class="analysis-state" role="status" aria-live="polite" hidden>
+        <span class="spinner" aria-hidden="true"></span><div><strong id="analysisProgressTitle">Looking at your photo…</strong><p id="analysisProgressText">Checking image quality first</p></div>
+      </div>
+      <div id="analysisResult" class="analysis-result" hidden></div>
+    </div>
+  </section>
 
-<script type="module">
-import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.0.0';
-env.allowLocalModels = false;
-env.useBrowserCache = true;
+  <section id="manualScreen" class="full-screen sheet-screen" aria-labelledby="manualHeading" hidden>
+    <header class="sheet-header">
+      <button class="closeScreen round-button" data-close="manualScreen" type="button" aria-label="Close">‹</button>
+      <span class="sheet-header-title">Add food</span><span class="camera-spacer"></span>
+    </header>
+    <div class="sheet-scroll form-scroll">
+      <p class="eyebrow">MANUAL ENTRY</p><h1 id="manualHeading" class="screen-title">What did you have?</h1>
+      <p class="helper-copy">Search genuine nutrition data, or enter a value from the label.</p>
+      <label class="field-label" for="manualFoodName">Food or drink</label>
+      <div class="search-row"><input id="manualFoodName" class="text-input" type="search" autocomplete="off" placeholder="e.g. oat porridge"><button id="manualSearchButton" class="search-button" type="button">Search</button></div>
+      <div id="manualSearchResults" class="search-results" aria-live="polite"></div>
+      <div id="manualEditor" class="editor-card" hidden></div>
+    </div>
+  </section>
 
-const STORAGE_KEY='caloriesnap-v4';
-let stream=null, imageData=null, classifier=null, selectedCoffee=null;
-const $=id=>document.getElementById(id);
-const pretty=s=>String(s).replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
-const dateKey=()=>new Date().toLocaleDateString('en-CA');
-const timeNow=()=>new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-function read(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return {}}}
-function write(x){localStorage.setItem(STORAGE_KEY,JSON.stringify(x))}
-function showToast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
-function render(){const d=read(),items=d[dateKey()]||[],total=items.reduce((a,x)=>a+x.kcal,0);$('total').textContent=Math.round(total).toLocaleString();$('meals').className=items.length?'':'empty';$('meals').innerHTML=items.length?items.map(x=>`<div class="meal"><div><b>${escapeHtml(x.name)}</b><small>${x.time}</small></div><strong>${Math.round(x.kcal)} kcal</strong></div>`).join(''):'<b>Nothing logged yet</b>Take a photo of your food to get started.'}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function open(o){o.classList.add('show')};function close(o){o.classList.remove('show')}
-async function startCamera(){try{if(!navigator.mediaDevices?.getUserMedia)throw Error('no camera');stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});$('video').srcObject=stream;open($('cameraOverlay'))}catch(e){showToast('Camera access failed. Use Safari over HTTPS and allow Camera.')}}
-function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('video').srcObject=null;close($('cameraOverlay'))}
-async function capture(){const v=$('video'),c=$('canvas');if(!v.videoWidth){showToast('Camera is still starting…');return}c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);imageData=c.toDataURL('image/jpeg',.88);$('photo').src=imageData;stopCamera();open($('analysisOverlay'));await analyse()}
-async function getClassifier(){if(classifier)return classifier;$('analysisContent').innerHTML='<div class="loading"><div class="spinner"></div><b>Loading food-recognition AI</b><br>First use can take a little longer while the free model downloads.</div>';try{classifier=await pipeline('image-classification','onnx-community/swin-finetuned-food101-ONNX',{device:'webgpu',dtype:'q4f16'});return classifier}catch(e){classifier=await pipeline('image-classification','onnx-community/swin-finetuned-food101-ONNX',{device:'wasm',dtype:'q8'});return classifier}}
-async function analyse(){try{const model=await getClassifier();const results=await model(imageData,{top_k:5});const top=results[0];const score=Math.round(top.score*100);const label=pretty(top.label);if(/coffee|espresso|cappuccino|latte|tea/i.test(top.label)){renderCoffee(label,score);return}if(score<35){renderUncertain(results);return}renderFood(label,score)}catch(e){$('analysisContent').innerHTML='<div class="eyebrow">ANALYSIS</div><h1 class="analysis-title">Couldn’t analyse that photo</h1><div class="card">The app has deliberately not invented a calorie value. Retake the photo with the food clearly visible and good lighting.</div><button class="primary" id="retry">RETAKE PHOTO</button>';$("retry").onclick=()=>{close($('analysisOverlay'));startCamera()}}}
-function renderFood(label,score){$('analysisContent').innerHTML=`<div class="eyebrow">AI IDENTIFICATION</div><h1 class="analysis-title">${escapeHtml(label)}</h1><div class="card"><strong>Confidence: ${score}%</strong><div class="muted">The AI has identified the food category. It will not pretend the photograph gives an exact weight.</div></div><div class="question">Approximate amount</div><input id="grams" class="field" type="number" inputmode="decimal" min="1" placeholder="Enter grams"><div class="warning">For accurate calories, the amount matters. A phone camera cannot directly measure the exact mass of food unless we have a reliable scale/reference.</div><button class="primary" id="calcFood">CALCULATE</button><button class="secondary" id="cancelAnalysis">Retake photo</button>`;$('calcFood').onclick=()=>calculateFood(label);$('cancelAnalysis').onclick=()=>close($('analysisOverlay'))}
-function renderCoffee(label,score){selectedCoffee='black';$('analysisContent').innerHTML=`<div class="eyebrow">AI IDENTIFICATION</div><h1 class="analysis-title">☕ ${escapeHtml(label)}</h1><div class="card"><strong>Confidence: ${score}%</strong><div class="muted">Correctly identified as a coffee/drink. No chicken, rice or made-up meal has been inserted.</div></div><div class="question">How much is in the cup?</div><input id="ml" class="field" type="number" inputmode="decimal" min="1" placeholder="Approx. ml — e.g. 250"><div class="question">What is in it?</div><button class="option selected" data-coffee="black">Black coffee</button><button class="option" data-coffee="milk">Coffee + milk</button><button class="option" data-coffee="sugar">Coffee + milk + sugar</button><div id="coffeeFields"></div><button class="primary" id="calcCoffee">CALCULATE</button><button class="secondary" id="cancelCoffee">Retake photo</button>`;document.querySelectorAll('[data-coffee]').forEach(b=>b.onclick=()=>selectCoffee(b.dataset.coffee));$('calcCoffee').onclick=calculateCoffee;$('cancelCoffee').onclick=()=>close($('analysisOverlay'))}
-function selectCoffee(type){selectedCoffee=type;document.querySelectorAll('[data-coffee]').forEach(b=>b.classList.toggle('selected',b.dataset.coffee===type));$('coffeeFields').innerHTML=type==='milk'?'<input id="milkMl" class="field" type="number" inputmode="decimal" placeholder="Approx. milk in ml">':type==='sugar'?'<input id="milkMl" class="field" type="number" inputmode="decimal" placeholder="Approx. milk in ml"><input id="sugarG" class="field" type="number" inputmode="decimal" placeholder="Sugar in grams">':''}
-function calculateCoffee(){const ml=Number($('ml')?.value);if(!ml)return showToast('Enter the approximate drink volume first.');let kcal=0,name='Black coffee';if(selectedCoffee==='black'){kcal=Math.max(1,ml*.02)}else if(selectedCoffee==='milk'){const milk=Number($('milkMl')?.value);if(!milk)return showToast('Enter the milk amount.');kcal=ml*.02+milk*.47;name=`Coffee + milk (${Math.round(milk)}ml milk)`}else{const milk=Number($('milkMl')?.value),sugar=Number($('sugarG')?.value);if(!milk||!sugar)return showToast('Enter milk and sugar amounts.');kcal=ml*.02+milk*.47+sugar*4;name=`Coffee + milk + sugar`}
-showCalculated(name,kcal,'Estimated from the amounts you entered. Coffee and milk values are standard reference estimates; the exact recipe can vary.')}
-function calculateFood(label){const g=Number($('grams')?.value);if(!g)return showToast('Enter the approximate amount first.');const per100=nutrition[label.toLowerCase()];if(!per100){$('analysisContent').innerHTML=`<div class="eyebrow">FOOD IDENTIFIED</div><h1 class="analysis-title">${escapeHtml(label)}</h1><div class="warning">I can identify this food, but this free build does not yet have a verified nutrition entry for it. I will not invent a calorie number.</div><button class="secondary" onclick="location.reload()">Back</button>`;return}showCalculated(label,g*per100/100,`Reference value: ${per100} kcal per 100g. This is an estimate and should be checked against the exact product/recipe when available.`)}
-function showCalculated(name,kcal,note){$('analysisContent').innerHTML=`<div class="eyebrow">CALORIE ESTIMATE</div><h1 class="analysis-title">${escapeHtml(name)}</h1><div class="calorie-total"><span>Estimated calories</span><span>${Math.round(kcal)} kcal</span></div><div class="muted">${escapeHtml(note)}</div><button class="primary" id="addDiary">✓ ADD TO DIARY</button><button class="secondary" id="backAnalysis">Change amount</button>`;$('addDiary').onclick=()=>{const d=read(),k=dateKey();d[k]=d[k]||[];d[k].push({name,kcal,time:timeNow()});write(d);close($('analysisOverlay'));render();showToast('Added to today’s diary')};$('backAnalysis').onclick=()=>analyse()}
-function renderUncertain(results){$('analysisContent').innerHTML='<div class="eyebrow">NOT CONFIDENT ENOUGH</div><h1 class="analysis-title">What did you photograph?</h1><div class="card">The AI is not confident enough to assign a food, so no calorie value has been invented.</div>'+results.slice(0,3).map(r=>`<button class="option" data-manual="${escapeHtml(r.label)}">${escapeHtml(pretty(r.label))} — ${Math.round(r.score*100)}%</button>`).join('')+'<button class="secondary" id="uncertainRetake">Retake photo</button>';document.querySelectorAll('[data-manual]').forEach(b=>b.onclick=()=>renderFood(pretty(b.dataset.manual),100));$('uncertainRetake').onclick=()=>close($('analysisOverlay'))}
-function showHistory(){const d=read(),keys=Object.keys(d).sort().reverse();$('historyList').innerHTML=keys.length?keys.map(k=>{const items=d[k],sum=items.reduce((a,x)=>a+x.kcal,0);return `<div class="day"><div class="day-head"><span>${k}</span><span>${Math.round(sum)} kcal</span></div>${items.map(x=>`<div class="small-meal"><span>${escapeHtml(x.name)}<br><small>${x.time}</small></span><b>${Math.round(x.kcal)} kcal</b></div>`).join('')}</div>`}).join(''):'<div class="empty-history">Your previous food days will appear here.</div>';open($('historyOverlay'))}
-const nutrition={'apple pie':237,'baby back ribs':351,'baklava':428,'beef carpaccio':120,'beef tartare':150,'beef stew':160,'beet salad':90,'beignets':350,'bibimbap':150,'bread pudding':280,'breakfast burrito':220,'bruschetta':170,'caesar salad':180,'cannoli':270,'caprese salad':160,'carrot cake':410,'ceviche':100,'cheesecake':321,'cheese plate':350,'chicken curry':180,'chicken quesadilla':250,'chicken wings':290,'chocolate cake':370,'chocolate mousse':225,'churros':360,'clam chowder':95,'club sandwich':240,'crab cakes':220,'croque madame':240,'cup cakes':350,'deviled eggs':145,'donuts':430,'dumplings':220,'edamame':120,'eggs benedict':190,'escargots':160,'falafel':330,'filet mignon':250,'fish and chips':220,'foie gras':460,'french fries':310,'french onion soup':50,'french toast':230,'fried calamari':175,'fried rice':180,'frozen yogurt':120,'garlic bread':350,'gnocchi':160,'greek salad':110,'grilled cheese sandwich':290,'grilled salmon':208,'guacamole':150,'gyoza':200,'hamburger':295,'hot and sour soup':40,'hot dog':290,'huevos rancheros':150,'hummus':166,'ice cream':207,'lasagna':135,'lobster bisque':100,'macaroni and cheese':164,'macarons':400,'miso soup':40,'mussels':86,'nachos':300,'omelette':154,'onion rings':320,'oysters':68,'pad thai':160,'paella':180,'pancakes':227,'panna cotta':220,'peking duck':337,'pizza':266,'pork chop':231,'poutine':180,'ramen':70,'ravioli':150,'red velvet cake':367,'risotto':166,'samosa':260,'sashimi':140,'scallops':111,'seaweed salad':70,'shrimp and grits':170,'spaghetti bolognese':160,'spring rolls':200,'steak':271,'strawberry shortcake':280,'sushi':150,'tacos':190,'takoyaki':250,'tiramisu':240,'tuna tartare':130,'waffles':291,'waffles':291};
-$('takeButton').onclick=startCamera;$('closeCamera').onclick=stopCamera;$('shutter').onclick=capture;$('retake').onclick=()=>{close($('analysisOverlay'));startCamera()};$('historyTab').onclick=showHistory;$('closeHistory').onclick=()=>close($('historyOverlay'));$('todayTab').onclick=()=>close($('historyOverlay'));
-render();
-</script>
+  <section id="targetScreen" class="modal-screen" hidden>
+    <button class="modal-backdrop" data-close="targetScreen" type="button" aria-label="Close daily goal"></button>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="targetHeading">
+      <button class="modal-close closeScreen" data-close="targetScreen" type="button" aria-label="Close">×</button>
+      <p class="eyebrow">OPTIONAL</p><h2 id="targetHeading">Set a daily goal</h2>
+      <p class="helper-copy">A guide for your diary. You can change or clear it any time.</p>
+      <label class="field-label" for="targetInput">Daily calories</label>
+      <div class="number-input-wrap"><input id="targetInput" class="text-input" type="number" inputmode="numeric" min="1" max="10000" placeholder="2000"><span>kcal</span></div>
+      <button id="saveTarget" class="primary-button" type="button">Save goal</button>
+      <button id="clearTarget" class="quiet-button" type="button">Remove goal</button>
+    </div>
+  </section>
+
+  <section id="detailScreen" class="modal-screen" hidden>
+    <button class="modal-backdrop" data-close="detailScreen" type="button" aria-label="Close food details"></button>
+    <div class="modal-card detail-card" role="dialog" aria-modal="true" aria-labelledby="detailHeading">
+      <button class="modal-close closeScreen" data-close="detailScreen" type="button" aria-label="Close">×</button>
+      <div id="entryDetail"></div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
+
