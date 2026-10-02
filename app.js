@@ -557,7 +557,11 @@ async function beginAnalysis(photo, existingCanvas = null) {
       return;
     }
   } catch (error) {
-    $('analysisResult').innerHTML = errorMarkup('ANALYSIS PAUSED', 'Photo analysis is unavailable.', 'No food or calories were added. Check your connection and try again, or enter the food manually.', 'manual');
+    state.draft = newDraft('', photo, 'food');
+    renderAnalysisEditor({ analysisUnavailable: true });
+    const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error || 'Unknown browser error');
+    const note = $('analysisResult').querySelector('.result-heading p:last-child');
+    if (note) note.title = `Recognition diagnostic: ${detail.slice(0, 240)}`;
   }
   $('analysisState').hidden = true;
   $('analysisResult').hidden = false;
@@ -579,10 +583,12 @@ function newDraft(name = '', photo = null, kind = 'food') {
 }
 
 function renderAnalysisEditor(result) {
-  const reviewCopy = result.labelMatch
+  const reviewCopy = result.analysisUnavailable
+    ? 'Photo recognition could not finish. Enter the food name below to get a quick estimate from your Food Library or nutrition search.'
+    : result.labelMatch
     ? 'Text on the package matched a known food. Check the product and portion before saving.'
     : 'A visual suggestion from your photo. Confirm the food and amount before saving.';
-  $('analysisResult').innerHTML = `<div class="result-heading"><p class="eyebrow">PLEASE REVIEW</p><h1 id="analysisTitle">Likely ${escapeHtml(result.name)}</h1><p>${reviewCopy}</p></div>
+  $('analysisResult').innerHTML = `<div class="result-heading"><p class="eyebrow">PLEASE REVIEW</p><h1 id="analysisTitle">${result.analysisUnavailable ? 'Enter the food for an estimate' : `Likely ${escapeHtml(result.name)}`}</h1><p>${reviewCopy}</p></div>
     <div class="quick-estimate" id="quickEstimate"><strong id="quickEstimateValue">Finding a quick estimate…</strong><p id="quickEstimateNote">Checking your Food Library and the local food guide first.</p></div>
     <div class="status-card"><strong>Photo stays on this device</strong><p>Food and package recognition run in your browser. CalorieSnap checks your saved foods and local food guide before any online lookup.</p></div>
     <div id="draftEditor"></div>`;
@@ -1204,3 +1210,4 @@ async function init() {
 }
 
 init();
+
