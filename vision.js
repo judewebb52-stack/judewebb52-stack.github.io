@@ -189,6 +189,11 @@ async function readPackageLabel(canvas, onProgress) {
 }
 
 export async function identifyPhoto(canvas, onProgress) {
+  // Read obvious printed product names before downloading or starting the
+  // large image model. This is both faster for packaged foods and avoids
+  // letting a visual guess (e.g. fries) override readable package text.
+  const packageFood = await readPackageLabel(canvas, onProgress);
+  if (packageFood) return { status: 'food', name: packageFood.name, kind: 'food', labelMatch: true };
   const classifier = await getPipeline(onProgress);
   onProgress?.('Checking whether this is food', 'Looking for food or drink before suggesting anything.');
   const coarse = await classifier(canvas, broadChoices.map(choice => choice.label));
@@ -209,8 +214,8 @@ export async function identifyPhoto(canvas, onProgress) {
   const packageScore = packageChoice ? packageChoice.score : 0;
   const packagingPossible = firstType === 'package' || (packageScore >= 0.10 && first.score - packageScore <= 0.10);
   if (packagingPossible) {
-    const packageFood = await readPackageLabel(canvas, onProgress);
-    if (packageFood) return { status: 'food', name: packageFood.name, kind: 'food', visualMatch: first.score, labelMatch: true };
+    const latePackageFood = await readPackageLabel(canvas, onProgress);
+    if (latePackageFood) return { status: 'food', name: latePackageFood.name, kind: 'food', visualMatch: first.score, labelMatch: true };
   }
   if (firstType === 'nonfood') return { status: 'nonfood' };
   if (firstType !== 'food' && firstType !== 'package') return { status: 'uncertain' };
@@ -238,3 +243,4 @@ export async function identifyPhoto(canvas, onProgress) {
   const drink = /coffee|espresso|latte|cappuccino|tea|milk|juice|smoothie|cola|lemonade|water|milkshake/.test(name);
   return { status: 'food', name, kind: drink ? 'drink' : 'food', visualMatch: match.score };
 }
+
