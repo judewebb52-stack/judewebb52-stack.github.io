@@ -49,6 +49,14 @@
       <div id="historyList" class="history-list"></div>
     </main>
 
+    <main id="foodsView" class="view" aria-labelledby="foodsHeading" hidden>
+      <section class="section-heading history-heading"><div><p class="eyebrow">YOUR FOOD MEMORY</p><h1 id="foodsHeading">Food Library</h1></div></section>
+      <p class="helper-copy food-library-intro">Confirmed foods stay on this device, ready for quicker estimates next time.</p>
+      <label class="visually-hidden" for="foodLibrarySearch">Search your saved foods</label>
+      <input id="foodLibrarySearch" class="text-input food-library-search" type="search" autocomplete="off" placeholder="Search foods, brands, or aliases">
+      <div id="foodLibraryList" class="food-library-list" aria-live="polite"></div>
+    </main>
+
     <div class="capture-dock" id="captureDock">
       <button id="takePhotoButton" class="capture-button" type="button"><span class="camera-glyph" aria-hidden="true">◎</span><span>Take a photo</span><span class="button-arrow" aria-hidden="true">↗</span></button>
     </div>
@@ -56,6 +64,7 @@
     <nav class="bottom-nav" aria-label="Main navigation">
       <button id="todayTab" class="nav-item active" type="button" aria-current="page"><span class="nav-icon" aria-hidden="true">◷</span><span>Today</span></button>
       <button id="historyTab" class="nav-item" type="button"><span class="nav-icon" aria-hidden="true">▤</span><span>History</span></button>
+      <button id="foodsTab" class="nav-item" type="button"><span class="nav-icon" aria-hidden="true">⌕</span><span>Foods</span></button>
     </nav>
   </div>
 
@@ -129,8 +138,15 @@
     </div>
   </section>
 
+  <section id="foodDetailScreen" class="modal-screen" hidden>
+    <button class="modal-backdrop" data-close="foodDetailScreen" type="button" aria-label="Close food details"></button>
+    <div class="modal-card food-detail-card" role="dialog" aria-modal="true" aria-labelledby="foodDetailHeading">
+      <button class="modal-close closeScreen" data-close="foodDetailScreen" type="button" aria-label="Close">×</button>
+      <div id="foodDetailContent"></div>
+    </div>
+  </section>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
-

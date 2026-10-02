@@ -1,5 +1,5 @@
 const DATABASE = 'caloriesnap-local';
-const VERSION = 1;
+const VERSION = 3;
 const LEGACY_KEY = 'caloriesnap-v4';
 
 function makeId() {
@@ -13,6 +13,8 @@ function openDatabase() {
       const db = request.result;
       if (!db.objectStoreNames.contains('days')) db.createObjectStore('days', { keyPath: 'date' });
       if (!db.objectStoreNames.contains('settings')) db.createObjectStore('settings', { keyPath: 'key' });
+      if (!db.objectStoreNames.contains('foods')) db.createObjectStore('foods', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('nutritionCache')) db.createObjectStore('nutritionCache', { keyPath: 'key' });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error ?? new Error('Could not open local diary storage.'));
@@ -60,6 +62,30 @@ export async function createStore() {
     return (await requestValue(db.transaction('days', 'readonly').objectStore('days').getAll())) ?? [];
   }
 
+  async function getFood(id) {
+    return (await requestValue(db.transaction('foods', 'readonly').objectStore('foods').get(id))) ?? null;
+  }
+
+  async function getAllFoods() {
+    return (await requestValue(db.transaction('foods', 'readonly').objectStore('foods').getAll())) ?? [];
+  }
+
+  async function putFood(food) {
+    await transaction('foods', 'readwrite', store => store.put(food));
+  }
+
+  async function deleteFood(id) {
+    await transaction('foods', 'readwrite', store => store.delete(id));
+  }
+
+  async function getCachedNutrition(key) {
+    return (await requestValue(db.transaction('nutritionCache', 'readonly').objectStore('nutritionCache').get(key))) ?? null;
+  }
+
+  async function putCachedNutrition(key, products) {
+    await transaction('nutritionCache', 'readwrite', store => store.put({ key, products, cachedAt: new Date().toISOString() }));
+  }
+
   async function getSettings() {
     const result = await requestValue(db.transaction('settings', 'readonly').objectStore('settings').get('preferences'));
     return result?.value ?? { calorieTarget: null };
@@ -87,6 +113,5 @@ export async function createStore() {
     }
   }
 
-  return { getDay, putDay, getAllDays, getSettings, saveSettings, migrateLegacy, makeId };
+  return { getDay, putDay, getAllDays, getFood, getAllFoods, putFood, deleteFood, getCachedNutrition, putCachedNutrition, getSettings, saveSettings, migrateLegacy, makeId };
 }
-
