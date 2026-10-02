@@ -558,10 +558,8 @@ async function beginAnalysis(photo, existingCanvas = null) {
     }
   } catch (error) {
     state.draft = newDraft('', photo, 'food');
-    renderAnalysisEditor({ analysisUnavailable: true });
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error || 'Unknown browser error');
-    const note = $('analysisResult').querySelector('.result-heading p:last-child');
-    if (note) note.title = `Recognition diagnostic: ${detail.slice(0, 240)}`;
+    renderAnalysisEditor({ analysisUnavailable: true, analysisDiagnostic: detail.slice(0, 240) });
   }
   $('analysisState').hidden = true;
   $('analysisResult').hidden = false;
@@ -591,6 +589,7 @@ function renderAnalysisEditor(result) {
   $('analysisResult').innerHTML = `<div class="result-heading"><p class="eyebrow">PLEASE REVIEW</p><h1 id="analysisTitle">${result.analysisUnavailable ? 'Enter the food for an estimate' : `Likely ${escapeHtml(result.name)}`}</h1><p>${reviewCopy}</p></div>
     <div class="quick-estimate" id="quickEstimate"><strong id="quickEstimateValue">Finding a quick estimate…</strong><p id="quickEstimateNote">Checking your Food Library and the local food guide first.</p></div>
     <div class="status-card"><strong>Photo stays on this device</strong><p>Food and package recognition run in your browser. CalorieSnap checks your saved foods and local food guide before any online lookup.</p></div>
+    ${result.analysisDiagnostic ? `<details class="why-details"><summary>Photo recognition details</summary><div class="why-content">${escapeHtml(result.analysisDiagnostic)}</div></details>` : ''}
     <div id="draftEditor"></div>`;
   state.editorHost = 'draftEditor';
   renderDraftEditor();
