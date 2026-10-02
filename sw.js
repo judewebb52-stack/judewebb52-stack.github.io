@@ -1,4 +1,4 @@
-const CACHE = 'caloriesnap-shell-v2';
+const CACHE = 'caloriesnap-shell-v3';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './storage.js', './nutrition.js', './food-library.js', './vision.js',
   './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png'
@@ -24,3 +24,4 @@ self.addEventListener('fetch', event => {
     return response;
   }).catch(() => request.mode === 'navigate' ? caches.match('./index.html') : Response.error())));
 });
+
